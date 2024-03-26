@@ -1,0 +1,40 @@
+{
+  "name": "express-prep",
+  "version": "0.1.0",
+  "description": "A Connect/Express style middleware for the Per Resource Events Protocol",
+  "keywords": [
+    "per resource events",
+    "events",
+    "notifications",
+    "prep"
+  ],
+  "author": "Rahul Gupta",
+  "license": "MPL-2.0",
+  "type": "module",
+  "main": "src/prep.js",
+  "exports": {
+    ".": "./src/prep.js",
+    "./event-id": "./src/event-id.js",
+    "./negotiate": "./src/negotiate.js",
+    "./templates": "./src/templates.js"
+  },
+  "dependencies": {
+    "crypto-random-string": "^5.0.0",
+    "debug": "^4.3.4",
+    "lodash": "^4.17.21",
+    "no-try": "^3.1.0",
+    "structured-field-utils": "1.1.0-nested-sf.0",
+    "structured-headers": "npm:@cxres/structured-headers@2.0.0-alpha.1-nesting.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "globals": "^14.0.0",
+    "nodemon": "^3.0.1",
+    "prettier": "^3.2.5"
+  },
+  "scripts": {
+    "lint": "eslint *.js src/** && prettier *.js src/** --check",
+    "prepublishOnly": "pnpm run lint"
+  }
+}
