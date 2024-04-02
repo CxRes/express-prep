@@ -28,7 +28,7 @@ function negotiateField(requestedFields, allowedFields, fieldType) {
       const isMatch = fieldType.match(requestedField, allowedField);
       if (isMatch) {
         const match = allowedField.slice();
-        if (typeof isMatch === "object") {
+        if (typeof isMatch !== "boolean") {
           match.push(isMatch); // return mismatched parameters as a 3rd array entry
         }
         return match;
@@ -71,14 +71,15 @@ function negotiateList(requestedFields, allowedFields) {
 
   const match = [];
 
-  for (const requestedField of allowedFields) {
+  for (const requestedField of rFields) {
     for (const allowedField of aFields) {
       const isMatch = item.match(requestedField, allowedField);
       if (isMatch) {
-        match.push(allowedField.slice());
-        if (typeof isMatch === "object") {
+        if (typeof isMatch === "boolean") {
+          match.push(allowedField.slice());
+        } else {
           // return mismatched parameters as a 3rd array entry
-          match[2].push(isMatch);
+          match.push(allowedField.slice().push(isMatch));
         }
       }
     }

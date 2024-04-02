@@ -1,6 +1,6 @@
 {
   "name": "express-prep",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A Connect/Express style middleware for the Per Resource Events Protocol",
   "keywords": [
     "per resource events",
