@@ -113,6 +113,7 @@ function negotiateContentStar(request, available) {
  * Item by the negotiate functions.
  */
 function cleanUp(obj) {
+  if (typeof obj !== "object") return obj;
   const filteredObj = {};
   for (const prop in obj) {
     if (Array.isArray(obj[prop])) {
