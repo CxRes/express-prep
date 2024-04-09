@@ -14,6 +14,7 @@ import { rfc822 as rfc822Template } from "./templates.js";
 import * as negotiate from "./negotiate.js";
 import { useTry } from "no-try";
 import stream from "node:stream";
+import dedent from "dedent";
 
 import Debug from "debug";
 const debug = Debug("PREP");
@@ -51,6 +52,38 @@ const VALID_STATUS_CODES = [200, 204, 206, 226];
 function appendToHeader(header, ...items) {
   const extraHeaders = items.join(", ");
   return `${header ?? ""}` ? `${header}, ${extraHeaders}` : extraHeaders;
+}
+
+/**
+ *  Sequentially Merge Stream into Readable
+ */
+function mergeStream(str) {
+  const pass = new stream.PassThrough({
+    objectMode: false,
+  });
+  pass.on("pipe", (src) => {
+    src.on("end", () => {
+      str.pipe(pass);
+      str.resume();
+    });
+    src.on("error", (err) => {
+      pass.destroy(err);
+    });
+  });
+  return pass;
+}
+
+/**
+ * Append text at the end of a stream
+ */
+function appendStream(text) {
+  return new stream.PassThrough({
+    objectMode: false,
+    flush(callback) {
+      this.push(text);
+      callback();
+    },
+  });
 }
 
 // Initialize the Events Engine for the middleware to use
@@ -91,9 +124,11 @@ function prepMiddleware(req, res, next) {
     // The acceptEvents header does not parse
     // This is a server mis-configuration
     if (error) {
-      debug(`Configured "Accept-Events" header does not parse for URL path ${path}.
-Define a proper response "Accept-Events" header
-${error.message}`);
+      debug(dedent`
+        Configured "Accept-Events" header does not parse for URL path ${path}.
+        Define a proper response "Accept-Events" header
+        ${error.message}
+      `);
       return {
         protocol: "prep",
         status: 500,
@@ -115,7 +150,7 @@ ${error.message}`);
    */
   function sendResponseWithNotification({
     headers: responseHeaders = {},
-    body: responseBody = "",
+    body: responseBody,
     params: requestedEvents = new Map(),
     modifiers: {
       /**
@@ -158,8 +193,10 @@ ${error.message}`);
     // The server does not define an allowed media-type, something it must at a minimum.
     // This is a server mis-configuration
     if (!configuredEvents?.get("accept")) {
-      debug(`No acceptable media-type configured for for URL path ${path}.
-Define an "accept" field for the response "accept-events" header in your middleware configuration`);
+      debug(dedent`
+        No acceptable media-type configured for for URL path ${path}.
+        Define an "accept" field for the response "accept-events" header in your middleware configuration
+      `);
       eventsHeader.status = 500;
       return eventsHeader;
     }
@@ -259,54 +296,23 @@ Define an "accept" field for the response "accept-events" header in your middlew
      */
     const digestBoundary = cryptoRandomString({ length: 20, type: "base64" });
 
-    setEventsHeader(
-      Object.assign(eventsHeader, modifyEventsHeader(negotiatedEvents)),
-    );
+    /**
+     * A stream to capture notifications
+     */
+    const notifications = new stream.Readable({
+      read() {},
+    });
+    // Do not send notifications until you write the headers (and representation).
+    notifications.pause();
 
-    const shouldSkipBody =
-      !responseBody ??
-      (reqLastEventID === "*" ||
-        (res.lastEventID && reqLastEventID === res.lastEventID));
-
-    if (shouldSkipBody) {
-      debug("Serving only Notifications");
-      res.setHeader(
-        "Content-Type",
-        `multipart/digest; boundary="${digestBoundary}"`,
-      );
-      res.setHeader(
-        "Vary",
-        appendToHeader(res.getHeader("Vary"), "Last-Event-ID"),
-      );
-      res.write(`\r\n--${digestBoundary}\r\n`);
-    } else {
-      debug("Serving notifications with response");
-      // Add to the Vary header only if the server defines it for the URL
-      mixedBoundary = cryptoRandomString({ length: 20, type: "base64" });
-      res.setHeader(
-        "Content-Type",
-        `multipart/mixed; boundary="${mixedBoundary}"`,
-      );
-      res.write(`--${mixedBoundary}`);
-      res.write("\r\n");
-      // Write response headers in first part
-      for (const header in responseHeaders) {
-        res.write(`${header}: ${responseHeaders[header]}`);
-        res.write("\r\n");
-      }
-      res.write("\r\n"); // Manually because JS uses `\n` as linebreak
-      responseBody instanceof stream.Readable
-        ? responseBody.pipe(res, { end: false })
-        : res.write(responseBody);
-      res.write(`\r\n--${mixedBoundary}\r\n`);
-      res.write(`Content-Type: multipart/digest; boundary="${digestBoundary}"`);
-      res.write("\r\n");
-      res.write(`\r\n--${digestBoundary}\r\n`);
-    }
-
-    if (is_firefox) {
-      res.write("\r\n".repeat(240));
-    }
+    /**
+     * Boundary for notifications
+     */
+    const boundary = dedent`
+      \n--${digestBoundary}\n
+      ${is_firefox ? "\n".repeat(240) : ""}
+      ${is_firefox ? `--${digestBoundary}\n` : ""}
+    `.replace(/\n/g, "\r\n");
 
     /**
      * Writes the notification to the response.
@@ -314,13 +320,9 @@ Define an "accept" field for the response "accept-events" header in your middlew
      * to prevent Firefox from closing the connection prematurely.)
      */
     function writeNotification(notification, last) {
-      // Content-* header will go in this line in the future
-      // when deviation cases when supported
-      res.write(notification);
-      !last && res.write(`\r\n--${digestBoundary}\r\n`);
-      if (is_firefox) {
-        res.write("\r\n".repeat(240));
-      }
+      notifications.push(
+        `${notification}${last ? `\r\n--${digestBoundary}\r\n` : boundary}`,
+      );
     }
 
     /**
@@ -329,8 +331,12 @@ Define an "accept" field for the response "accept-events" header in your middlew
      * and ends the response.
      */
     function writeEnd() {
-      res.write(`\r\n--${digestBoundary}--`);
-      mixedBoundary && res.write(`\r\n--${mixedBoundary}--`);
+      notifications.push(
+        dedent`
+          \n--${digestBoundary}--
+          ${mixedBoundary ? `--${mixedBoundary}--` : ""}
+        `.replace(/\n/g, "\r\n"),
+      );
       res.end();
     }
 
@@ -364,6 +370,61 @@ Define an "accept" field for the response "accept-events" header in your middlew
       writeEnd();
       connected = false;
       removeHandler();
+    }
+
+    setEventsHeader(
+      Object.assign(eventsHeader, modifyEventsHeader(negotiatedEvents)),
+    );
+
+    const shouldSkipBody =
+      !responseBody ??
+      (reqLastEventID === "*" ||
+        (res.lastEventID && reqLastEventID === res.lastEventID));
+
+    if (shouldSkipBody) {
+      debug("Serving only Notifications");
+      res.setHeader(
+        "Content-Type",
+        `multipart/digest; boundary="${digestBoundary}"`,
+      );
+      res.setHeader(
+        "Vary",
+        appendToHeader(res.getHeader("Vary"), "Last-Event-ID"),
+      );
+      res.write(boundary);
+      notifications.pipe(res);
+      notifications.resume();
+    } else {
+      debug("Serving notifications with response");
+      // Add to the Vary header only if the server defines it for the URL
+      mixedBoundary = cryptoRandomString({ length: 20, type: "base64" });
+      res.setHeader(
+        "Content-Type",
+        `multipart/mixed; boundary="${mixedBoundary}"`,
+      );
+      res.write(`--${mixedBoundary}\r\n`);
+      // Write response headers in first part
+      for (const header in responseHeaders) {
+        res.write(`${header}: ${responseHeaders[header]}\r\n`);
+      }
+      res.write("\r\n"); // Empty line to separate headers
+
+      const postResponse = `${dedent`
+          \n--${mixedBoundary}
+          Content-Type: multipart/digest; boundary="${digestBoundary}"\n
+        `.replace(/\n/g, "\r\n")}${boundary}`;
+
+      if (responseBody instanceof stream.Readable) {
+        responseBody
+          .pipe(appendStream(postResponse))
+          .pipe(mergeStream(notifications), { end: false })
+          .pipe(res);
+      } else {
+        res.write(responseBody || "");
+        res.write(postResponse);
+        notifications.pipe(res);
+        notifications.resume();
+      }
     }
   }
 

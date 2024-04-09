@@ -7,6 +7,9 @@ dependencies:
   debug:
     specifier: ^4.3.4
     version: 4.3.4
+  dedent:
+    specifier: ^1.5.1
+    version: 1.5.1
   lodash:
     specifier: ^4.17.21
     version: 4.17.21
@@ -286,6 +289,15 @@ packages:
         optional: true
     dependencies:
       ms: 2.1.2
+
+  /dedent@1.5.1:
+    resolution: {integrity: sha512-+LxW+KLWxu3HW3M2w2ympwtqPrqYRzU8fqi6Fhd18fBALe15blJPI/I4+UHveMVG6lJqB4JNd4UG0S5cnVHwIg==}
+    peerDependencies:
+      babel-plugin-macros: ^3.1.0
+    peerDependenciesMeta:
+      babel-plugin-macros:
+        optional: true
+    dev: false
 
   /deep-is@0.1.4:
     resolution: {integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==}
