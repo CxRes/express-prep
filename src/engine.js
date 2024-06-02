@@ -90,7 +90,7 @@ function EventsFactory({ comparator = defaultComparator } = {}) {
     list.get(path).forEach((event, negotiatedFields) => {
       event.emit(
         "notification",
-        generateNotification({ path, negotiatedFields }),
+        generateNotification(negotiatedFields),
         lastEvent,
       );
       if (lastEvent) {

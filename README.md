@@ -154,12 +154,12 @@ app.patch("/foo", bodyParser.text(), (req, res, next) => {
 
 app.patch("/foo", bodyParser.text(), (req, res) => {
   // Define a function that generates the notification to send
-  function generateNotification({
-    // which can be specific to the URL path and
-    path,
-    // parsed content-* event fields (see npm:structured-headers for format)
+  function generateNotification(
+    // which can be specific to the parsed content-* event fields
+    // for a given path specified in the trigger function
+    // (see npm:structured-headers for format)
     negotiatedFields,
-  }) {
+  ) {
     // Generate part header
     const header = templates.header(negotiatedFields);
 
