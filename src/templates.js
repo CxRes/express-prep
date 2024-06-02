@@ -9,7 +9,14 @@
  */
 
 /**
- * A template that generates headers for part message in a multipart body
+ * Captializes kebab-case to Train-Case for HTTP header fields.
+ */
+function capitalizeKebabCase(str) {
+  return str.replace(/(^|(?<=-))[a-z]/g, (letter) => letter.toUpperCase());
+}
+
+/**
+ * A template that generates headers for part message in a multipart body.
  */
 function headerTemplate(negotiatedFields) {
   return Object.entries(negotiatedFields).reduce((header, [key, value]) => {
@@ -17,7 +24,7 @@ function headerTemplate(negotiatedFields) {
     const v = (Array.isArray(value) ? value[0] : value).toLowerCase();
     if (k.startsWith("content-")) {
       if (k !== "content-type" || v !== "message/rfc822") {
-        return `${header}${key}: ${v}\r\n`;
+        return `${header}${capitalizeKebabCase(k)}: ${v}\r\n`;
       }
     }
     return header;
