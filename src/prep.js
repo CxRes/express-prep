@@ -113,12 +113,11 @@ function prepMiddleware(req, res, next) {
    * given path. It also sets the `Accepts-Events` header in the response.
    */
   function configureNotifications({ config: configuredEventsParams }) {
+    const aePrepItem = `"prep";${configuredEventsParams || `accept=(${CONTENT_TYPES})`}`;
+
     // Parse the allowed fields identical to request header
     const [error, configuredEvents] = useTry(
-      () =>
-        parseList(
-          `prep;${configuredEventsParams || `accept=(${CONTENT_TYPES})`}`,
-        )?.[0][1],
+      () => parseList(aePrepItem)?.[0][1],
     );
 
     // The acceptEvents header does not parse
@@ -137,10 +136,7 @@ function prepMiddleware(req, res, next) {
 
     // Set the Accept-Events Header if the route supports PREP notifications
     const acceptEvents = res.getHeader("accept-events");
-    res.setHeader(
-      "Accept-Events",
-      appendToHeader(acceptEvents, `"prep";${configuredEventsParams}`),
-    );
+    res.setHeader("Accept-Events", appendToHeader(acceptEvents, aePrepItem));
 
     res.events.prep.config = configuredEvents;
   }
