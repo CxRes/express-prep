@@ -435,8 +435,8 @@ function prepMiddleware(req, res, next) {
   function triggerNotification({
     path = req.path,
     generateNotification = () => rfc822Template({ res }),
+    lastEvent = method === "DELETE",
   } = {}) {
-    const lastEvent = method === "DELETE";
     process.nextTick(() =>
       notify({
         path,

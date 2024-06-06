@@ -183,8 +183,12 @@ app.patch("/foo", bodyParser.text(), (req, res) => {
 
   // Trigger the notification
   res.events.prep.trigger({
-    // path: req.path,    // where to trigger notification (use if another path)
+    // path               // where to trigger notification
+                          // (default: req.path)
     generateNotification, // function for notification to send, defined above
+                          // (default: message/rfc822 notifications with only headers)
+    // lastEvent          // Set to true to close stream after this notification
+                          // (default: false)
   });
 });
 ```
