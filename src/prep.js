@@ -430,11 +430,33 @@ function prepMiddleware(req, res, next) {
   }
 
   /**
+   * The default Notification to send
+   */
+  function defaultNotification({
+    // Date is a hack since nodejs does not seem to provide access to send date.
+    date = res._header.match(/^Date: (.*?)$/m)?.[1] || new Date().toUTCString(),
+    method = req.method,
+    eTag,
+    eventID = res.getHeader("Event-ID"),
+    location = res.getHeader("Content-Location"),
+    delta,
+  } = {}) {
+    return `\r\n${rfc822Template({
+      date,
+      method,
+      ...(eTag && { eTag }),
+      ...(eventID && { eventID }),
+      ...(location && { location }),
+      ...(delta && { delta }),
+    })}`;
+  }
+
+  /**
    * Allows the middleware consumer to initiate a notification.
    */
   function triggerNotification({
     path = req.path,
-    generateNotification = () => rfc822Template({ res }),
+    generateNotification = defaultNotification,
     lastEvent = method === "DELETE",
   } = {}) {
     process.nextTick(() =>
@@ -451,6 +473,7 @@ function prepMiddleware(req, res, next) {
     configure: configureNotifications,
     send: sendResponseWithNotification,
     trigger: triggerNotification,
+    defaultNotification,
   };
 
   return next && next();

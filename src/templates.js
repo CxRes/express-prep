@@ -28,36 +28,28 @@ function headerTemplate(negotiatedFields) {
  * A template that generates an RFC822 formatted notification using semantics
  * defined in the PREP specification.
  */
-function rfc822Template({ res, delta }) {
-  const method = res.req.method;
-
-  // Date is a hack since node does not seem to provide access to send date.
-  const date =
-    res._header.match(/^Date: (.*?)$/m)?.[1] || new Date().toUTCString();
-
+function rfc822Template({ method, date, eTag, eventID, location, delta }) {
   let msg = `Method: ${method}\r
 Date: ${date}\r
 `;
 
   // Include `event-ID`, if available
-  const eventID = res.getHeader("event-id");
   if (eventID) {
     msg = `${msg}Event-ID: ${eventID}\r\n`;
   }
 
-  // Include `ETag`, if available
-  const eTag = res.getHeader("ETag");
+  // Include `E-Tag`, if available
   if (eTag) {
     msg = `${msg}ETag: ${eTag}\r\n`;
   }
 
-  // Add `Content-Location` on POST
-  if (res.req.method === "POST") {
-    msg = `${msg}Content-location: ${res.getHeader("Content-Location")}\r\n`;
+  // Add `Content-Location`, if Available
+  if (location) {
+    msg = `${msg}Content-Location: ${location}\r\n`;
   }
 
   // Add delta, if requested
-  if (delta && res.req.method.startsWith("P")) {
+  if (delta && method.startsWith("P")) {
     msg = `${msg}\r\n${delta}`;
   }
 

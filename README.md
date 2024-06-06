@@ -155,12 +155,12 @@ app.patch("/foo", bodyParser.text(), (req, res, next) => {
 app.patch("/foo", bodyParser.text(), (req, res) => {
   // Define a function that generates the notification to send
   function generateNotification(
+    negotiatedFields,
     // which can be specific to the parsed content-* event fields
     // for a given path specified in the trigger function
     // (see npm:structured-headers for format)
-    negotiatedFields,
   ) {
-    // Generate part header
+    // Generate part header from template
     const header = templates.header(negotiatedFields);
 
     // Check if delta is requested with the template
@@ -170,11 +170,14 @@ app.patch("/foo", bodyParser.text(), (req, res) => {
       ifDiff = params.get("delta")?.[0].toString() === "text/plain";
     }
 
-    // Generate part body
+    // Generate part body from a template
     const body = templates.rfc822({
-      res,
-      // diff from the last response/notification (optional)
-      delta: ifDiff && req.body,
+      date: res._header.match(/^Date: (.*?)$/m)?.[1],
+      method: req.method,
+      eventID: res.getHeader("event-id"), // (optional, but recommended)
+      // location: res.getHeader("Content-Location"), // (optional)
+      // diff from the last response
+      delta: ifDiff && req.body, // (optional)
     });
 
     // Return the notification
@@ -191,6 +194,23 @@ app.patch("/foo", bodyParser.text(), (req, res) => {
                           // (default: false)
   });
 });
+```
+
+#### Default Template
+
+The `generateNotification()` function when not specified at the time of triggering notification results in a default `message/rfc822` format notification being generated.
+
+This default notification is also exposed as `res.events.prep.defaultNotification()`. Users may use this function to modify default values rather than calling the template:
+
+```js
+  res.events.prep.trigger({
+    generateNotification(negotiatedFields) {
+      // ... determine if the diff exists as before
+      return res.events.prep.defaultNotification({
+        delta: ifDiff && req.body
+      }),
+    },
+  });
 ```
 
 ## Copyright and License
