@@ -151,6 +151,7 @@ function prepMiddleware(req, res, next) {
   function sendResponseWithNotification({
     headers: responseHeaders = {},
     body: responseBody,
+    isBodyStream = false,
     params: requestedEvents = new Map(),
     modifiers: {
       /**
@@ -414,7 +415,7 @@ function prepMiddleware(req, res, next) {
           Content-Type: multipart/digest; boundary="${digestBoundary}"\n
         `.replace(/\n/g, "\r\n")}${boundary}`;
 
-      if (responseBody instanceof stream.Readable) {
+      if (isBodyStream) {
         responseBody
           .pipe(appendStream(postResponse))
           .pipe(mergeStream(notifications), { end: false })
