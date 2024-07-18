@@ -58,6 +58,8 @@ Date: ${date}\r
   // Add delta, if requested
   if (delta && method.startsWith("P")) {
     msg = `${msg}\r\n${delta}`;
+  } else {
+    msg = `${msg}\r\n`;
   }
 
   return msg;
