@@ -374,50 +374,49 @@ function prepMiddleware(req, res, next) {
     );
 
     const shouldSkipBody =
-      !responseBody ??
+      responseBody &&
       (reqLastEventID === "*" ||
         (res.lastEventID && reqLastEventID === res.lastEventID));
 
+    if (responseBody) {
+      if (reqLastEventID) {
+        res.setHeader(
+          "Vary",
+          appendToHeader(res.getHeader("Vary"), "Last-Event-ID"),
+        )
+      }
+    }
+
+    // Add to the Vary header only if the server defines it for the URL
+    mixedBoundary = cryptoRandomString({ length: 20, type: "base64" });
+    res.setHeader(
+      "Content-Type",
+      `multipart/mixed; boundary="${mixedBoundary}"`,
+    );
+    res.write(`--${mixedBoundary}\r\n`);
+    // Write response headers in first part
+    for (const header in responseHeaders) {
+      res.write(`${header}: ${responseHeaders[header]}\r\n`);
+    }
+    res.write("\r\n"); // Empty line to separate headers
+
+    const postResponse = `${dedent`
+        \n--${mixedBoundary}
+        Content-Type: multipart/digest; boundary="${digestBoundary}"\n
+      `.replace(/\n/g, "\r\n")}${boundary}`;
+
     if (shouldSkipBody) {
-      debug("Serving only Notifications");
-      res.setHeader(
-        "Content-Type",
-        `multipart/digest; boundary="${digestBoundary}"`,
-      );
-      res.setHeader(
-        "Vary",
-        appendToHeader(res.getHeader("Vary"), "Last-Event-ID"),
-      );
-      res.write(boundary);
+      res.write(postResponse);
       notifications.pipe(res);
       notifications.resume();
     } else {
-      debug("Serving notifications with response");
-      // Add to the Vary header only if the server defines it for the URL
-      mixedBoundary = cryptoRandomString({ length: 20, type: "base64" });
-      res.setHeader(
-        "Content-Type",
-        `multipart/mixed; boundary="${mixedBoundary}"`,
-      );
-      res.write(`--${mixedBoundary}\r\n`);
-      // Write response headers in first part
-      for (const header in responseHeaders) {
-        res.write(`${header}: ${responseHeaders[header]}\r\n`);
-      }
-      res.write("\r\n"); // Empty line to separate headers
-
-      const postResponse = `${dedent`
-          \n--${mixedBoundary}
-          Content-Type: multipart/digest; boundary="${digestBoundary}"\n
-        `.replace(/\n/g, "\r\n")}${boundary}`;
-
       if (isBodyStream) {
         responseBody
           .pipe(appendStream(postResponse))
           .pipe(mergeStream(notifications), { end: false })
           .pipe(res);
       } else {
-        res.write(responseBody || "");
+        res.write(responseBody);
         res.write(postResponse);
         notifications.pipe(res);
         notifications.resume();
