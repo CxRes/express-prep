@@ -1,9 +1,21 @@
-# Temporary Objects
+# Temporary Files
 _*
+
+# Configuration Files
+.*
+*.config.*
+
+# Lock Files
+*lock.*
+*.lock
+
+# Test Files
+[tT]est/
+*.[tT]est.*
 
 # Logs
 logs
-*.log
+*.log*
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
@@ -14,12 +26,6 @@ pids
 *.seed
 *.pid.lock
 
-# Dependency directories
-node_modules/
-
-# Optional eslint cache
-.eslintcache
-
 # dotenv environment variables file
 .env
 .env.test
@@ -27,8 +33,18 @@ node_modules/
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 
+# Scripts
+[sS]cripts/
+
+# Test Coverage
+[cC]overage/
+
 # TODO
 TODO
+todo
 
-# References
-# https://github.com/github/gitignore/blob/master/Node.gitignore
+# Docs
+[dD]ocs/
+
+# License
+DCO

@@ -1,5 +1,5 @@
 /*!
- *  Copyright (c) 2024, Rahul Gupta
+ *  Copyright (c) 2024, Rahul Gupta and Express PREP contributors.
  *
  *  This Source Code Form is subject to the terms of the Mozilla Public
  *  License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -12,19 +12,19 @@ import _ from "lodash";
 
 import Debug from "debug";
 
-const debug = Debug("PREP:engine");
+const debug = Debug("prep:engine");
 
 /**
  * The `defaultComparator` function compares if the negotiated event-fields
  * are same.
  */
-function defaultComparator(storedFields, recievedFields) {
-  return _.isEqual(storedFields, recievedFields);
+function defaultComparator(storedFields, receivedFields) {
+  return _.isEqual(storedFields, receivedFields);
 }
 
 /**
  * A factory function that creates an instance of a
- * Events Engine for notifications. It can optionaly be configured with
+ * Events Engine for notifications. It can optionally be configured with
  * a `comparator` function that modifies how the stored negotiated fields are
  * matched to received fields.
  */
@@ -117,7 +117,7 @@ function EventsFactory({ comparator = defaultComparator } = {}) {
 
   /**
    * Each Instance of the Engine provides a way to notify events and
-   * a way to subscribe to recieve these events.
+   * a way to subscribe to receive these events.
    */
   return Object.freeze({
     subscribe,

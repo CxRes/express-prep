@@ -1,5 +1,5 @@
 /*!
- *  Copyright (c) 2024, Rahul Gupta
+ *  Copyright (c) 2024, Rahul Gupta and Express PREP contributors.
  *
  *  This Source Code Form is subject to the terms of the Mozilla Public
  *  License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -14,12 +14,12 @@ import { item, mediaType } from "structured-field-utils";
  *
  */
 function negotiateField(requestedFields, allowedFields, fieldType) {
-  const rFields = Array.isArray(requestedFields)
-    ? requestedFields
-    : [[requestedFields, new Map()]];
-  const aFields = Array.isArray(allowedFields)
-    ? allowedFields
-    : [[allowedFields, new Map()]];
+  const rFields =
+    Array.isArray(requestedFields) ? requestedFields : (
+      [[requestedFields, new Map()]]
+    );
+  const aFields =
+    Array.isArray(allowedFields) ? allowedFields : [[allowedFields, new Map()]];
 
   const sortedFields = fieldType.sort(rFields);
 
@@ -40,7 +40,7 @@ function negotiateField(requestedFields, allowedFields, fieldType) {
 /**
  * Takes in requested and allowed items to find the best match.
  * If there are mismatched parameters or parameters are a list, it includes them
- * from the request as a third array entry; allowing ther user to choose how to
+ * from the request as a third array entry; allowing the user to choose how to
  * deal with mismatched parameters.
  */
 function negotiateItem(requestedFields, allowedFields) {
@@ -50,7 +50,7 @@ function negotiateItem(requestedFields, allowedFields) {
 /**
  * Takes in requested and allowed media-types to find the best match.
  * If there are mismatched parameters or parameters are a list, it includes them
- * from the request as a third array entry; allowing ther user to choose how to
+ * from the request as a third array entry; allowing the user to choose how to
  * deal with mismatched parameters.
  */
 function negotiateType(requestedFields, allowedFields) {
@@ -62,12 +62,12 @@ function negotiateType(requestedFields, allowedFields) {
  * Does not process media-type fields, ensure they are filtered first.
  */
 function negotiateList(requestedFields, allowedFields) {
-  const rFields = Array.isArray(requestedFields)
-    ? requestedFields
-    : [[requestedFields, new Map()]];
-  const aFields = Array.isArray(allowedFields)
-    ? allowedFields
-    : [[allowedFields, new Map()]];
+  const rFields =
+    Array.isArray(requestedFields) ? requestedFields : (
+      [[requestedFields, new Map()]]
+    );
+  const aFields =
+    Array.isArray(allowedFields) ? allowedFields : [[allowedFields, new Map()]];
 
   const match = [];
 

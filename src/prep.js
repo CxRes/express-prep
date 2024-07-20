@@ -1,5 +1,5 @@
 /*!
- *  Copyright (c) 2024, Rahul Gupta
+ *  Copyright (c) 2024, Rahul Gupta and Express PREP contributors.
  *
  *  This Source Code Form is subject to the terms of the Mozilla Public
  *  License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -17,7 +17,7 @@ import stream from "node:stream";
 import dedent from "dedent";
 
 import Debug from "debug";
-const debug = Debug("PREP");
+const debug = Debug("prep");
 
 /**
  * The list of default content-types for notifications.
@@ -93,7 +93,7 @@ const { subscribe, notify } = EventsFactory();
  * PREP middleware function that is used to handle incoming HTTP requests and
  * generate notifications based on the request and response.
  * The middleware will add the following functions to the response:
- *  + `configureNotifications` - configues the `Accept-Events` response header
+ *  + `configureNotifications` - configures the `Accept-Events` response header
  *  + `sendPerResourceEvents` - to send a response with prep notifications
  *  + `triggerPerResourceEvent` - to trigger the notification,
  */
@@ -221,7 +221,7 @@ function prepMiddleware(req, res, next) {
       appendToHeader(res.getHeader("vary"), "Accept-Events"),
     );
 
-    // Connnection Handling
+    // Connection Handling
 
     /**
      * Tracks the connection status.
@@ -289,7 +289,7 @@ function prepMiddleware(req, res, next) {
     let mixedBoundary;
 
     /**
-     * A randomly generated boundary string for the separarting notifications.
+     * A randomly generated boundary string for the separating notifications.
      */
     const digestBoundary = cryptoRandomString({ length: 20, type: "base64" });
 
@@ -383,7 +383,7 @@ function prepMiddleware(req, res, next) {
         res.setHeader(
           "Vary",
           appendToHeader(res.getHeader("Vary"), "Last-Event-ID"),
-        )
+        );
       }
     }
 

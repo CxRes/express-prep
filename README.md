@@ -1,10 +1,10 @@
-# Express-PREP
+# Express PREP
 
 A Connect/Express style middleware to send [Per Resource Events](https://cxres.github.io/prep/draft-gupta-httpbis-per-resource-events.html).
 
 ## Installation
 
-Install **Express-PREP** and **Express-Accept-Events** using your favourite package manager.
+Install **Express PREP** and **Express Accept Events** using your favourite package manager.
 
 ```sh
 npm|pnpm|yarn add express-prep express-accept-events
@@ -12,9 +12,9 @@ npm|pnpm|yarn add express-prep express-accept-events
 
 ## Usage
 
-*Consider using the `express-events-negotiate` package instead for a simplified notifications setup.*
+_Consider using the `express-events-negotiate` package instead for a simplified notifications setup._
 
-We are going to describe here a non-trivial implementation of Express-PREP that produces notifications with deltas.
+We are going to describe here a non-trivial implementation of **Express PREP** to serve notifications with deltas.
 
 ### Setup
 
@@ -61,34 +61,37 @@ app.get("/foo", (req, res) => {
   // Get the content-* headers
   const headers = getMediaType(responseBody);
 
-  // By default this function configures notifications to be sent as `message/rfc822`.
+  // Configures notifications to be sent as `message/rfc822` with deltas.
+  // The default is to omit the delta.
   let failStatus = res.events.prep.configure(
-    `accept=("message/rfc822";delta="text/plain")`
+    `accept=("message/rfc822"; delta="text/plain")`,
   );
 
-  // Since we want to send deltas using `message/rfc822` body
-  // We provide custom logic to negotiate the `Content-Type` for the delta
+  // Custom logic for negotiating media-type for deltas
+  // The headers are parsed "npm:structured-headers". PREP adds a second
+  // Map after parameters to List Item with requested deltas, allowing
+  // an implementor to negotiate against the configured parameters.
   function negotiateEvents(defaultEvents) {
     const cType = defaultEvents["content-type"];
     if (cType[0].toString() === "message/rfc822" && cType.length > 2) {
-      // Check the second Map for requested delta parameter
-      if (cType[2].has('delta')) {
-        // Negotiate Media-Type for delta
+      // Check for additional map after parameters for the
+      // "message/rfc822" item
+      if (cType[2].has("delta")) {
+        // Manually negotiate Media-Type for delta
         const match = negotiate.type(
-          cType[2].get('delta'),
-          cType[1].get('delta'),
-        )
+          cType[2].get("delta"),
+          cType[1].get("delta"),
+        );
         if (match) {
           // If match, set the matched format as the delta parameter
-          cType[1].set('delta', match);
-        }
-        else {
+          cType[1].set("delta", match);
+        } else {
           // If no match, delete the delta parameter
-          cType[1].delete('delta');
+          cType[1].delete("delta");
         }
       }
-    // Mismatches are automatically removed
-    return defaultEvents;
+      // Second Map is automatically removed
+      return defaultEvents;
     }
   }
 
@@ -102,8 +105,8 @@ app.get("/foo", (req, res) => {
           headers,
           params,
           modifiers: {
-            negotiateEvents
-          }
+            negotiateEvents,
+          },
         });
 
         // if notifications are sent, you can quit
@@ -130,7 +133,7 @@ app.get("/foo", (req, res) => {
 
 ### Triggering Notifications
 
-Now you can trigger notification using `res.events.prep.trigger`, when the resource is modified, for example, in your `PATCH` handler.
+Now you can trigger a notification using `res.events.prep.trigger()`, when the resource is modified, for example, in your `PATCH` handler.
 
 ```js
 app.patch("/foo", bodyParser.text(), (req, res, next) => {
@@ -182,16 +185,16 @@ app.patch("/foo", bodyParser.text(), (req, res) => {
 
     // Return the notification
     return `${header}\r\n${body}`;
-  };
+  }
 
   // Trigger the notification
   res.events.prep.trigger({
     // path               // where to trigger notification
-                          // (default: req.path)
+    // (default: req.path)
     generateNotification, // function for notification to send, defined above
-                          // (default: message/rfc822 notifications with only headers)
+    // (default: message/rfc822 notifications with only headers)
     // lastEvent          // Set to true to close stream after this notification
-                          // (default: false)
+    // (default: false)
   });
 });
 ```
@@ -215,6 +218,6 @@ This default notification is also exposed as `res.events.prep.defaultNotificatio
 
 ## Copyright and License
 
-(c) 2024, [Rahul Gupta](https://cxres.pages.dev/profile#i)
+(c) 2024, [Rahul Gupta](https://cxres.pages.dev/profile#i) and Express PREP contributors.
 
 The source code in this repository is released under the [Mozilla Public License v2.0](./LICENSE).

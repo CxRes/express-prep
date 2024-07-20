@@ -1,5 +1,5 @@
 /*!
- *  Copyright (c) 2024, Rahul Gupta
+ *  Copyright (c) 2024, Rahul Gupta and Express PREP contributors.
  *
  *  This Source Code Form is subject to the terms of the Mozilla Public
  *  License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -9,7 +9,7 @@
  */
 
 /**
- * Captializes kebab-case to Train-Case for HTTP header fields.
+ * Capitalizes kebab-case to Train-Case for HTTP header fields.
  */
 function capitalizeKebabCase(str) {
   return str.replace(/(^|(?<=-))[a-z]/g, (letter) => letter.toUpperCase());
