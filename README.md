@@ -12,7 +12,7 @@ npm|pnpm|yarn add express-prep express-accept-events
 
 ## Usage
 
-_Consider using the `express-events-negotiate` package instead for a simplified notifications setup._
+_Consider using the **[Express Negotiate Events](https://www.npmjs.com/package/express-negotiate-events)** package instead for a simplified notifications setup._
 
 We are going to describe here a non-trivial implementation of **Express PREP** to serve notifications with deltas.
 
