@@ -330,8 +330,8 @@ function prepMiddleware(req, res, next) {
     function writeEnd() {
       notifications.push(
         dedent`
-          \n--${digestBoundary}--
-          ${mixedBoundary ? `--${mixedBoundary}--` : ""}
+          --${digestBoundary}--
+          --${mixedBoundary}--\n
         `.replace(/\n/g, "\r\n"),
       );
       res.end();
