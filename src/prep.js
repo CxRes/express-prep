@@ -306,9 +306,9 @@ function prepMiddleware(req, res, next) {
      * Boundary for notifications
      */
     const boundary = dedent`
-      \n--${digestBoundary}\n
+      \n--${digestBoundary}
       ${is_firefox ? "\n".repeat(240) : ""}
-      ${is_firefox ? `--${digestBoundary}\n` : ""}
+      ${is_firefox ? `--${digestBoundary}` : ""}
     `.replace(/\n/g, "\r\n");
 
     /**
@@ -318,7 +318,7 @@ function prepMiddleware(req, res, next) {
      */
     function writeNotification(notification, last) {
       notifications.push(
-        `${notification}${last ? `\r\n--${digestBoundary}\r\n` : boundary}`,
+        `\r\n${notification}${last ? `\r\n--${digestBoundary}` : boundary}`,
       );
     }
 
@@ -330,7 +330,7 @@ function prepMiddleware(req, res, next) {
     function writeEnd() {
       notifications.push(
         dedent`
-          --${digestBoundary}--
+          --
           --${mixedBoundary}--\n
         `.replace(/\n/g, "\r\n"),
       );
