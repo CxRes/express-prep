@@ -452,15 +452,16 @@ function prepMiddleware(req, res, next) {
   function triggerNotification({
     path = req.path,
     generateNotification = defaultNotification,
-    lastEvent = method === "DELETE",
+    lastEvent,
   } = {}) {
-    process.nextTick(() =>
-      notify({
-        path,
-        generateNotification,
-        lastEvent,
-      }),
-    );
+    (lastEvent = lastEvent ?? (path === req.path && method === "DELETE")),
+      process.nextTick(() =>
+        notify({
+          path,
+          generateNotification,
+          lastEvent,
+        }),
+      );
   }
 
   res.events ??= {};
