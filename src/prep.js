@@ -268,7 +268,7 @@ function prepMiddleware(req, res, next) {
      */
     const expires = new Date();
     expires.setTime(Date.now() + cxTime * 1000);
-    setTimeout(writeEnd, cxTime * 1000);
+    const timeoutID = setTimeout(writeEnd, cxTime * 1000);
     eventsHeader.expires = expires.toUTCString();
 
     // Handle the connection
@@ -353,11 +353,15 @@ function prepMiddleware(req, res, next) {
      */
     function disconnected(cause) {
       if (!connected) return;
-      connected = false;
+
       debug(`Connection closed on ${path} from ${cause} event`);
 
-      // Now remove the handlers
+      // Mark Disconnection
+      connected = false;
+      // Remove the handlers
       removeHandler();
+      // Release the timeout
+      clearTimeout(timeoutID);
     }
 
     setEventsHeader(
