@@ -13,16 +13,16 @@ importers:
         version: 5.0.0
       debug:
         specifier: ^4.3.5
-        version: 4.3.5
+        version: 4.3.7
       dedent:
         specifier: ^1.5.3
         version: 1.5.3
       express-accept-events:
-        specifier: ^0.2.2
-        version: 0.2.2
+        specifier: ^0.3.0
+        version: 0.3.0
       express-negotiate-events:
-        specifier: ^0.2.1
-        version: 0.2.1
+        specifier: ^0.3.0
+        version: 0.3.0
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -30,11 +30,11 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       structured-field-utils:
-        specifier: 1.1.0-nested-sf.0
-        version: 1.1.0-nested-sf.0
+        specifier: 1.2.0-nested-sf.0
+        version: 1.2.0-nested-sf.0
       structured-headers:
-        specifier: npm:@cxres/structured-headers@2.0.0-alpha.1-nesting.0
-        version: '@cxres/structured-headers@2.0.0-alpha.1-nesting.0'
+        specifier: npm:@cxres/structured-headers@2.0.0-nesting.0
+        version: '@cxres/structured-headers@2.0.0-nesting.0'
     devDependencies:
       '@commitlint/cli':
         specifier: ^19.5.0
@@ -364,8 +364,8 @@ packages:
     resolution: {integrity: sha512-htHhNF8WrM/NfaLSWuTYw0NqVgFRVHYSyHlRT3i/Yv5xvErld8Gw7C6ldm+0TLjoGlUe6X1VV72JSir7+yLp/Q==}
     engines: {node: '>=18.0'}
 
-  '@cxres/structured-headers@2.0.0-alpha.1-nesting.0':
-    resolution: {integrity: sha512-MYHRF2oS3Zvumh3swXs//GDGNe6L+sYnwplitC8Ns8CFQro+WKCidDrgk+suLq2Wm6e0ohIvEWqB8VM1mqbR8g==}
+  '@cxres/structured-headers@2.0.0-nesting.0':
+    resolution: {integrity: sha512-zW8AF/CXaxGe0B1KCj/QEY88Hqxh6xZ9i98UHqCFZZa/QgYGYJD9Z40/h+UZsrYi/ZW/VQVQhObB5Zegd/MDZQ==}
     engines: {node: '>=18', npm: '>=6'}
 
   '@eslint-community/eslint-utils@4.4.0':
@@ -695,15 +695,6 @@ packages:
     resolution: {integrity: sha512-wAV9QHOsNbwnWdNW2FYvE1P56wtgSbM+3SZcdGiWQILwVjACCXDCI3Ai8QlCjMDB8YK5zySiXZYBiwGmNY3lnw==}
     engines: {node: '>=12'}
 
-  debug@4.3.5:
-    resolution: {integrity: sha512-pt0bNEmneDIvdL1Xsd9oDQ/wrQRkXDT4AUWlNZNPKvW5x/jyO9VFXkJUP07vQ2upmw5PlaITaPKc31jK13V+jg==}
-    engines: {node: '>=6.0'}
-    peerDependencies:
-      supports-color: '*'
-    peerDependenciesMeta:
-      supports-color:
-        optional: true
-
   debug@4.3.7:
     resolution: {integrity: sha512-Er2nc/H7RrMXZBFCEim6TCmMk02Z8vLC2Rbi1KEBggpo0fS6l0S1nnapwmIi3yW/+GOJap1Krg4w0Hg80oCqgQ==}
     engines: {node: '>=6.0'}
@@ -831,11 +822,11 @@ packages:
     resolution: {integrity: sha512-VyhnebXciFV2DESc+p6B+y0LjSm0krU4OgJN44qFAhBY0TJ+1V61tYD2+wHusZ6F9n5K+vl8k0sTy7PEfV4qpg==}
     engines: {node: '>=16.17'}
 
-  express-accept-events@0.2.2:
-    resolution: {integrity: sha512-P9hVug6sMVZAFqzYK0vc/J18/PRXyaKCEBbvVYemEJEhb68MNNffiI/KZq3iDaWlHWYR+35BxM5n1FqFqHyKHg==}
+  express-accept-events@0.3.0:
+    resolution: {integrity: sha512-6ZWFlaZYo+Vsbm1sFoJgtaYy6xkHjcfdLKgs7I8ZLSJhBqtbzH09aIj4UkmL9zuV5kUTsyfegL9Dp5XKyb+VSg==}
 
-  express-negotiate-events@0.2.1:
-    resolution: {integrity: sha512-ehSjuJ8MCPXKb+UsoNEWzosr9qOQPgzJng1xVi5UDSdsCCuN8YgseULxxMxwqnTMfVpceQ0F1Mpgdz+mQyRrJg==}
+  express-negotiate-events@0.3.0:
+    resolution: {integrity: sha512-IPAukv2hDgdj95C30qhMJlvNJbnBBtN5Hwvrl/z05qB85bAh+7yMR5jXiMZMmUwaD0K6L3+U6kTYWT7AlWc11Q==}
 
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
@@ -1212,9 +1203,6 @@ packages:
   minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
 
-  ms@2.1.2:
-    resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
-
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
@@ -1500,8 +1488,8 @@ packages:
     resolution: {integrity: sha512-0fk9zBqO67Nq5M/m45qHCJxylV/DhBlIOVExqgOMiCCrzrhU6tCibRXNqE3jwJLftzE9SNuZtYbpzcO+i9FiKw==}
     engines: {node: '>=14.16'}
 
-  structured-field-utils@1.1.0-nested-sf.0:
-    resolution: {integrity: sha512-fISHrNmYK9c1PZFxQdMPG19d3uVv1lXwiW9MkKEjjU8SWkpfPWMXmYt7Pw3lt7TshOjPauO8EgTgcu85qMga9g==}
+  structured-field-utils@1.2.0-nested-sf.0:
+    resolution: {integrity: sha512-fK/2PzGf152UCgjpWBesQuUanOQ+f08r4LMe7GugIzs7KfnNyDspDZTaWixf36TO+Df5eq4z1Z0EB3t4Wc7yNQ==}
 
   summary@2.1.0:
     resolution: {integrity: sha512-nMIjMrd5Z2nuB2RZCKJfFMjgS3fygbeyGk9PxPPaJR1RIcyN9yn4A63Isovzm3ZtQuEkLBVgMdPup8UeLH7aQw==}
@@ -1960,7 +1948,7 @@ snapshots:
 
   '@cspell/url@8.14.4': {}
 
-  '@cxres/structured-headers@2.0.0-alpha.1-nesting.0': {}
+  '@cxres/structured-headers@2.0.0-nesting.0': {}
 
   '@eslint-community/eslint-utils@4.4.0(eslint@9.12.0(jiti@2.3.3))':
     dependencies:
@@ -1976,7 +1964,7 @@ snapshots:
   '@eslint/config-array@0.18.0':
     dependencies:
       '@eslint/object-schema': 2.1.4
-      debug: 4.3.5
+      debug: 4.3.7
       minimatch: 3.1.2
     transitivePeerDependencies:
       - supports-color
@@ -1986,7 +1974,7 @@ snapshots:
   '@eslint/eslintrc@3.1.0':
     dependencies:
       ajv: 6.12.6
-      debug: 4.3.5
+      debug: 4.3.7
       espree: 10.2.0
       globals: 14.0.0
       ignore: 5.3.2
@@ -2335,10 +2323,6 @@ snapshots:
 
   dargs@8.1.0: {}
 
-  debug@4.3.5:
-    dependencies:
-      ms: 2.1.2
-
   debug@4.3.7:
     dependencies:
       ms: 2.1.3
@@ -2417,7 +2401,7 @@ snapshots:
       ajv: 6.12.6
       chalk: 4.1.2
       cross-spawn: 7.0.3
-      debug: 4.3.5
+      debug: 4.3.7
       escape-string-regexp: 4.0.0
       eslint-scope: 8.1.0
       eslint-visitor-keys: 4.1.0
@@ -2476,19 +2460,19 @@ snapshots:
       signal-exit: 4.1.0
       strip-final-newline: 3.0.0
 
-  express-accept-events@0.2.2:
+  express-accept-events@0.3.0:
     dependencies:
-      debug: 4.3.5
+      debug: 4.3.7
       no-try: 4.0.0
-      structured-field-utils: 1.1.0-nested-sf.0
-      structured-headers: '@cxres/structured-headers@2.0.0-alpha.1-nesting.0'
+      structured-field-utils: 1.2.0-nested-sf.0
+      structured-headers: '@cxres/structured-headers@2.0.0-nesting.0'
     transitivePeerDependencies:
       - supports-color
 
-  express-negotiate-events@0.2.1:
+  express-negotiate-events@0.3.0:
     dependencies:
-      debug: 4.3.5
-      structured-headers: '@cxres/structured-headers@2.0.0-alpha.1-nesting.0'
+      debug: 4.3.7
+      structured-headers: '@cxres/structured-headers@2.0.0-nesting.0'
     transitivePeerDependencies:
       - supports-color
 
@@ -2827,8 +2811,6 @@ snapshots:
 
   minimist@1.2.8: {}
 
-  ms@2.1.2: {}
-
   ms@2.1.3: {}
 
   natural-compare@1.4.0: {}
@@ -3073,9 +3055,9 @@ snapshots:
 
   strip-json-comments@5.0.1: {}
 
-  structured-field-utils@1.1.0-nested-sf.0:
+  structured-field-utils@1.2.0-nested-sf.0:
     dependencies:
-      structured-headers: '@cxres/structured-headers@2.0.0-alpha.1-nesting.0'
+      structured-headers: '@cxres/structured-headers@2.0.0-nesting.0'
 
   summary@2.1.0: {}
 
