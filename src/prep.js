@@ -271,10 +271,6 @@ function prepMiddleware(req, res, next) {
     const timeoutID = setTimeout(writeEnd, cxTime * 1000);
     eventsHeader.expires = expires.toUTCString();
 
-    // Handle the connection
-    req.socket.server.timeout = 0.0;
-    req.socket.server.keepAliveTimeout = cxTime * 1000 + 1000;
-
     /**
      * Retrieving the value of the "Last-Event-ID" header from the incoming
      * HTTP request.
