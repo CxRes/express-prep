@@ -21,7 +21,7 @@ function capitalizeKebabCase(str) {
 function headerTemplate(negotiatedFields) {
   return Object.entries(negotiatedFields).reduce((header, [key, value]) => {
     const k = key.toLowerCase();
-    const v = (Array.isArray(value) ? value[0] : value).toLowerCase();
+    const v = (Array.isArray(value) ? value[0] : value).toString().toLowerCase();
     if (k.startsWith("content-")) {
       if (k !== "content-type" || v !== "message/rfc822") {
         return `${header}${capitalizeKebabCase(k)}: ${v}\r\n`;
