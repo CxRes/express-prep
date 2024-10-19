@@ -11,6 +11,8 @@ import js from "@eslint/js";
 import { includeIgnoreFile } from "@eslint/compat";
 import globals from "globals";
 import prettier from "eslint-config-prettier";
+import vitest from "@vitest/eslint-plugin";
+import noOnlyTests from "eslint-plugin-no-only-tests";
 
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -33,4 +35,15 @@ export default [
   },
   js.configs.recommended,
   prettier,
+  {
+    files: ["**/*.test.js"],
+    plugins: {
+      vitest,
+      noOnlyTests,
+    },
+    rules: {
+      ...vitest.configs.recommended.rules,
+      "noOnlyTests/no-only-tests": ["error", { fix: true }],
+    },
+  },
 ];
