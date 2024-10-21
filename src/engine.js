@@ -88,11 +88,10 @@ function EventsFactory({ comparator = defaultComparator } = {}) {
     }
     debug(`Triggering notifications on URL path ${path}`);
     list.get(path).forEach((event, negotiatedFields) => {
-      event.emit(
-        "notification",
-        generateNotification(negotiatedFields),
-        lastEvent,
-      );
+      const notification = generateNotification(negotiatedFields);
+      if (notification) {
+        event.emit("notification", notification, lastEvent);
+      }
       if (lastEvent) {
         event.emit("end");
       }
