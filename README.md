@@ -178,7 +178,7 @@ app.patch("/foo", bodyParser.text(), (req, res) => {
       date: res._header.match(/^Date: (.*?)$/m)?.[1],
       method: req.method,
       eventID: res.getHeader("event-id"), // (optional, but recommended)
-      // location: res.getHeader("Content-Location"), // (optional)
+      // location: res.getHeader("Location"), // (optional)
       // diff from the last response
       delta: ifDiff && req.body, // (optional)
     });

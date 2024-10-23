@@ -21,7 +21,9 @@ function capitalizeKebabCase(str) {
 function headerTemplate(negotiatedFields) {
   return Object.entries(negotiatedFields).reduce((header, [key, value]) => {
     const k = key.toLowerCase();
-    const v = (Array.isArray(value) ? value[0] : value).toString().toLowerCase();
+    const v = (Array.isArray(value) ? value[0] : value)
+      .toString()
+      .toLowerCase();
     if (k.startsWith("content-")) {
       if (k !== "content-type" || v !== "message/rfc822") {
         return `${header}${capitalizeKebabCase(k)}: ${v}\r\n`;
@@ -50,9 +52,9 @@ Date: ${date}\r
     msg = `${msg}ETag: ${eTag}\r\n`;
   }
 
-  // Add `Content-Location`, if Available
+  // Add `Location`, if Available
   if (location) {
-    msg = `${msg}Content-Location: ${location}\r\n`;
+    msg = `${msg}Location: ${location}\r\n`;
   }
 
   // Add delta, if requested

@@ -424,7 +424,7 @@ function prepMiddleware(req, res, next) {
     method = req.method,
     eTag,
     eventID = res.getHeader("Event-ID"),
-    location = res.getHeader("Content-Location"),
+    location = res.getHeader("Location"),
     delta,
   } = {}) {
     return `\r\n${rfc822Template({
@@ -442,17 +442,17 @@ function prepMiddleware(req, res, next) {
    */
   function triggerNotification({
     path = req.path,
-    generateNotification = defaultNotification,
+    generateNotification = () => defaultNotification(),
     lastEvent,
   } = {}) {
-    (lastEvent = lastEvent ?? (path === req.path && method === "DELETE")),
-      process.nextTick(() =>
-        notify({
-          path,
-          generateNotification,
-          lastEvent,
-        }),
-      );
+    lastEvent = lastEvent ?? (path === req.path && method === "DELETE");
+    process.nextTick(() =>
+      notify({
+        path,
+        generateNotification,
+        lastEvent,
+      }),
+    );
   }
 
   res.events ??= {};
