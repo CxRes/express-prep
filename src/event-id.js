@@ -24,9 +24,18 @@ function eventID(req, res, next) {
   /**
    * Sets a unique event ID for the last event on a given URL.
    */
-  res.setEventID = function setEventID(path) {
-    const lastEventID = cryptoRandomString({ length: 6, type: "alphanumeric" });
-    lastEventIDs[path || req.path];
+  res.setEventID = function setEventID(args) {
+    let path, lastEventID;
+    if (typeof args === "object") {
+      path = args.path;
+      lastEventID = args.id;
+    } else {
+      path = args;
+    }
+    path = path ?? req.path;
+    lastEventID =
+      lastEventID ?? cryptoRandomString({ length: 6, type: "alphanumeric" });
+    lastEventIDs[path] = lastEventID;
     return lastEventID;
   };
 

@@ -147,6 +147,10 @@ app.patch("/foo", bodyParser.text(), (req, res, next) => {
     res.statusCode = 200;
     // set eventID, if you support it
     res.setHeader("Event-ID", res.setEventID());
+    // you can set eventID on other paths, say, in case of side effects
+    //   res.setEventID("/another/path")
+    // you also set your own eventID for a given path
+    //   res.setEventID({ path: req.path, id:"foo" })
     // close the response first
     res.end();
 
